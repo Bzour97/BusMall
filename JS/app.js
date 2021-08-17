@@ -19,7 +19,6 @@ let product = ['bag.jpg', 'banana.jpg', 'breakfast.jpg', 'bathroom.jpg', 'boots.
 
 
 let attempt = 1;
-
 let maxAttempt = 25;
 
 let productArr = [];
