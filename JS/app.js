@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 let attemptEl = document.getElementById('attempts');
 
