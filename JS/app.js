@@ -168,7 +168,6 @@ function displayScore() {
         liEl.textContent = `${productArr[i].productImageName} has ${productArr[i].votes} votes and  ${productArr[i].views} views.`;
 
 
-
     }
 
 }
