@@ -1,174 +1,173 @@
 'use strict';
 
-let attemptEl = document.getElementById('attempts');
+let attemptsE1 = document.getElementById('attempts');
+let container = document.getElementById('image-container')
 
-let container = document.getElementById('image-container');
-
-let imgOne = document.getElementById('imgOne');
-
-let imgTwo = document.getElementById('imgTwo');
-
-let imgThree = document.getElementById('imgThree');
+let imgOne = document.getElementById('imgOne')
+let imgTwo = document.getElementById('imgTwo')
+let imgThree = document.getElementById('imgThree')
 
 let result = document.getElementById('results');
 
+let imgOfproduct = ['bag.jpg', 'banana.jpg', 'bathroom.jpg', 'boots.jpg', 'breakfast.jpg', 'bubblegum.jpg', 'chair.jpg', 'cthulhu.jpg', 'dog-duck.jpg', 'dragon.jpg', 'pen.jpg', 'pet-sweep.jpg', 'scissors.jpg', 'shark.jpg', 'sweep.png', 'tauntaun.jpg', 'unicorn.jpg', 'water-can.jpg', 'wine-glass.jpg'];
 
-
-let product = ['bag.jpg', 'banana.jpg', 'breakfast.jpg', 'bathroom.jpg', 'boots.jpg', 'bubblegum.jpg', 'chair.jpg', 'cthulhu.jpg', 'dog-duck.jpg', 'dragon.jpg', 'pen.jpg', 'pet-sweep.jpg', 'scissors.jpg', 'shark.jpg', 'sweep.png', 'tauntaun.jpg ', 'unicorn.jpg', 'water-can.jpg ', 'wine-glass.jpg'];
-
-
-
+let maxAttempts = 25;
 let attempt = 1;
-let maxAttempt = 25;
+let showImg = [];
+let voteImage = [];
+let viewImage = [];
+let product = [];
+let busNameImage = [];
 
-let productArr = [];
-
-
-
-function ImagesOfProduct(productImageName) {
-
-    this.productImageName = productImageName.split('.')[0];
-
-    this.ImagesOfProduct = `Images/${productImageName}`;
-
-    this.votes = 0;
-
-    this.views = 0;
-
-    productArr.push(this);
-
+for (let i = 0; i < imgOfproduct.length; i++) {
+    new ImagesOfProduct(imgOfproduct[i])
 }
 
-for (let i = 0; i < product.length; i++) {
-
-    new ImagesOfProduct(product[i]);
-
+function localStorageSave()
+{
+    let dataA = JSON.stringify(product);
+    localStorage.setItem('product',dataA);
 }
 
+function localStorageRead()
+{
+    let objString = localStorage.getItem('product');
+    
+    let objNormal = JSON.parse(objString);
 
-function imgProductByRand() {
-
-    return Math.floor(Math.random() * productArr.length);
-
-}
-
-
-
-let imgOneIndex;
-
-let imgTwoIndex;
-
-let imgThreeIndex;
-
-
-
-function imgProductRender() {
-
-    imgOneIndex = imgProductByRand();
-
-    imgTwoIndex = imgProductByRand();
-
-    imgThreeIndex = imgProductByRand();
-
-
-
-    while (imgOneIndex === imgTwoIndex || imgTwoIndex === imgThreeIndex || imgThreeIndex === imgOneIndex) {
-
-        imgOneIndex = imgProductByRand();
-
-        imgThreeIndex = imgProductByRand();
-
+    if(objNormal)
+    {  
+        product = objNormal;
     }
 
+}
 
+localStorageRead();
 
-    imgOne.setAttribute('src', productArr[imgOneIndex].ImagesOfProduct)
-
-    imgTwo.setAttribute('src', productArr[imgTwoIndex].ImagesOfProduct);
-
-    imgThree.setAttribute('src', productArr[imgThreeIndex].ImagesOfProduct);
-
-
-
-    productArr[imgOneIndex].views++;
-
-    productArr[imgTwoIndex].views++;
-
-    productArr[imgThreeIndex].views++;
+function ImagesOfProduct(productName) {
+    this.pName = productName.split('.')[0];
+    this.imgPath = `Img/${productName}`;
+    this.Votes = 0;
+    this.Views = 0;
+    product.push(this);
+    busNameImage.push(this.pName);
 
 }
-imgProductRender();
 
-imgOne.addEventListener('click', clickHandler);
+function randImage() {
+    return Math.floor(Math.random() * imgOfproduct.length)
+}
 
-imgTwo.addEventListener('click', clickHandler);
+let indexOne;
+let indexTwo;
+let indexThree;
 
-imgThree.addEventListener('click', clickHandler);
+function render() {
+    indexOne = randImage();
+    indexTwo = randImage();
+    indexThree = randImage();
 
+    while (indexOne === indexTwo || indexTwo == indexThree || indexOne === indexThree || showImg.includes(indexOne) || showImg.includes(indexTwo) || showImg.includes(indexThree)) {
+        indexOne = randImage();
+        indexTwo = randImage();
+        indexThree = randImage();
+    }
+    imgOne.setAttribute('src', product[indexOne].imgPath);
+    imgTwo.setAttribute('src', product[indexTwo].imgPath);
+    imgThree.setAttribute('src', product[indexThree].imgPath);
+    product[indexOne].Views++;
+    product[indexTwo].Views++;
+    product[indexThree].Views++;
+    showImg[0]=indexOne;
+    showImg[1]=indexTwo;
+    showImg[2]=indexThree;
+}
+render();
 
+imgOne.addEventListener('click', clickHandle);
+imgTwo.addEventListener('click', clickHandle)
+imgThree.addEventListener('click', clickHandle);
 
-function clickHandler(event) {
-
-    if (attempt <= maxAttempt) {
-
-
-
-        let imgProductClicked = event.target.id;
-
-        if (imgProductClicked === 'imgOne') {
-
-            productArr[imgOneIndex].votes++;
-
+function clickHandle(event) 
+{
+    if (attempt <= maxAttempts) {
+        let clickedImage = event.target.id;
+        if (clickedImage === 'imgOne') {
+            product[indexOne].Votes++;
+        } else if (clickedImage === 'imgTwo') {
+            product[indexTwo].Votes++
+        } else if (clickedImage === 'imgThree') {
+            product[indexThree].Votes++
         }
-
-
-
-        else if (imgProductClicked === 'imgTwo') {
-
-            productArr[imgTwoIndex].votes++
-
-        }
-
-
-
-        else if (imgProductClicked === 'imgThree') {
-
-            productArr[imgThreeIndex].votes++
-
-        }
-
-
-
-        imgProductRender();
-
+        render();
         attempt++;
-
-
-
+        attemptsE1.textContent = `attemps : ${attempt}`
+    }
+    else
+    {
+    
+    imgOne.removeEventListener('click', clickHandle)
+    imgTwo.removeEventListener('click', clickHandle)
+    imgThree.removeEventListener('click', clickHandle)
     }
 
 }
 
+let btnEl = document.getElementById('btn');
+btnEl.addEventListener('click', displayResult)
 
-
-let ourButton = document.getElementById('button');
-
-ourButton.addEventListener('click', displayScore);
-
-
-
-function displayScore() {
-
-    for (let i = 0; i < productArr.length; i++) {
-
-        let liEl = document.createElement('li');
-
+function displayResult(event) 
+{
+    let liEl;
+    
+        for (let i = 0; i < product.length; i++) 
+    {
+        liEl = document.createElement('li');
         result.appendChild(liEl);
-
-        liEl.textContent = `${productArr[i].productImageName} has ${productArr[i].votes} votes and  ${productArr[i].views} views.`;
-
-
-
+        liEl.textContent = `${product[i].pName} has ${product[i].Votes} votes and  ${product[i].Views} views.`;
+        voteImage.push(product[i].Votes);
+        viewImage.push(product[i].Views);
     }
+    btnEl.removeEventListener('click', displayResult)
+    localStorageSave();
+    chartRender()
+}
 
+function chartRender() {
+    let ctx = document.getElementById('myChart').getContext('2d');
+    let myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: busNameImage,
+            datasets: [{
+                label: '# of Votes',
+                data: voteImage,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
+            }, {
+                label: '# of views',
+                data: viewImage,
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    
 }
