@@ -124,9 +124,13 @@ function displayResult(event)
     {
         liEl = document.createElement('li');
         result.appendChild(liEl);
+
         liEl.textContent = `${product[i].pName} has ${product[i].Votes} votes and  ${product[i].Views} views.`;
         voteImage.push(product[i].Votes);
         viewImage.push(product[i].Views);
+
+        liEl.textContent = `${productArr[i].productImageName} has ${productArr[i].votes} votes and  ${productArr[i].views} views.`;
+
     }
     btnEl.removeEventListener('click', displayResult)
     localStorageSave();
