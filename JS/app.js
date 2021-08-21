@@ -60,7 +60,7 @@ function ImgProduct(productName) {
 
 
 function randImg() {
-    return Math.floor(Math.random() * Img.length) // 0 to 18 array lenght is 19
+    return Math.floor(Math.random() * Img.length)
 }
 
 let indexOne;
