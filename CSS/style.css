@@ -57,9 +57,9 @@ img
     height: 300px;
   }
 
-  #imgOne,
-  #imgTwo,
-  #imgThree 
+  #firstImg,
+  #secondImg,
+  #thirdImg 
   {
     width: 33%;
     margin: 0px;

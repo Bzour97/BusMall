@@ -3,74 +3,79 @@
 let attemptsE1 = document.getElementById('attempts');
 let container = document.getElementById('image-container')
 
-let imgOne = document.getElementById('imgOne')
-let imgTwo = document.getElementById('imgTwo')
-let imgThree = document.getElementById('imgThree')
+let imgOne = document.getElementById('firstImg')
+let imgTwo = document.getElementById('secondImg')
+let imgThree = document.getElementById('thirdImg')
 
 let result = document.getElementById('results');
 
-let imgOfproduct = ['bag.jpg', 'banana.jpg', 'bathroom.jpg', 'boots.jpg', 'breakfast.jpg', 'bubblegum.jpg', 'chair.jpg', 'cthulhu.jpg', 'dog-duck.jpg', 'dragon.jpg', 'pen.jpg', 'pet-sweep.jpg', 'scissors.jpg', 'shark.jpg', 'sweep.png', 'tauntaun.jpg', 'unicorn.jpg', 'water-can.jpg', 'wine-glass.jpg'];
+let Img = ['bag.jpg', 'banana.jpg', 'bathroom.jpg', 'boots.jpg', 'breakfast.jpg', 'bubblegum.jpg', 'chair.jpg', 'cthulhu.jpg', 'dog-duck.jpg', 'dragon.jpg', 'pen.jpg', 'pet-sweep.jpg', 'scissors.jpg', 'shark.jpg', 'sweep.png', 'tauntaun.jpg', 'unicorn.jpg', 'water-can.jpg', 'wine-glass.jpg'];
 
 let maxAttempts = 25;
 let attempt = 1;
 let showImg = [];
-let voteImage = [];
-let viewImage = [];
+let voteImg = [];
+let viewImg = [];
 let product = [];
-let busNameImage = [];
+let busImg = [];
 
-for (let i = 0; i < imgOfproduct.length; i++) {
-    new ImagesOfProduct(imgOfproduct[i])
+for (let i = 0; i < Img.length; i++) {
+    new ImgProduct(Img[i])
 }
 
-function localStorageSave()
+
+// for save in local storage
+function forSaveLocalStorage()
 {
-    let dataA = JSON.stringify(product);
-    localStorage.setItem('product',dataA);
+    let data1 = JSON.stringify(product);
+    localStorage.setItem('product',data1);
 }
 
-function localStorageRead()
+
+function forReadLocalStorage()
 {
-    let objString = localStorage.getItem('product');
+    let stringObj = localStorage.getItem('product');
+    // let stringObj2 = localStorage.getItem('Views');
     
-    let objNormal = JSON.parse(objString);
+    let normalObj = JSON.parse(stringObj);
+    // let normalObj2 = JSON.parse(stringObj2);
 
-    if(objNormal)
+    if(normalObj)
     {  
-        product = objNormal;
+        product = normalObj;
     }
-
 }
 
-localStorageRead();
+forReadLocalStorage();
 
-function ImagesOfProduct(productName) {
+function ImgProduct(productName) {
     this.pName = productName.split('.')[0];
     this.imgPath = `Img/${productName}`;
     this.Votes = 0;
     this.Views = 0;
     product.push(this);
-    busNameImage.push(this.pName);
+    busImg.push(this.pName);
 
 }
 
-function randImage() {
-    return Math.floor(Math.random() * imgOfproduct.length)
+
+function randImg() {
+    return Math.floor(Math.random() * Img.length) // 0 to 18 array lenght is 19
 }
 
 let indexOne;
 let indexTwo;
 let indexThree;
 
-function render() {
-    indexOne = randImage();
-    indexTwo = randImage();
-    indexThree = randImage();
+function rendImg() {
+    indexOne = randImg();
+    indexTwo = randImg();
+    indexThree = randImg();
 
     while (indexOne === indexTwo || indexTwo == indexThree || indexOne === indexThree || showImg.includes(indexOne) || showImg.includes(indexTwo) || showImg.includes(indexThree)) {
-        indexOne = randImage();
-        indexTwo = randImage();
-        indexThree = randImage();
+        indexOne = randImg();
+        indexTwo = randImg();
+        indexThree = randImg();
     }
     imgOne.setAttribute('src', product[indexOne].imgPath);
     imgTwo.setAttribute('src', product[indexTwo].imgPath);
@@ -82,7 +87,8 @@ function render() {
     showImg[1]=indexTwo;
     showImg[2]=indexThree;
 }
-render();
+
+rendImg();
 
 imgOne.addEventListener('click', clickHandle);
 imgTwo.addEventListener('click', clickHandle)
@@ -92,14 +98,14 @@ function clickHandle(event)
 {
     if (attempt <= maxAttempts) {
         let clickedImage = event.target.id;
-        if (clickedImage === 'imgOne') {
+        if (clickedImage === 'firstImg') {
             product[indexOne].Votes++;
-        } else if (clickedImage === 'imgTwo') {
+        } else if (clickedImage === 'secondImg') {
             product[indexTwo].Votes++
-        } else if (clickedImage === 'imgThree') {
+        } else if (clickedImage === 'thirdImg') {
             product[indexThree].Votes++
         }
-        render();
+        rendImg();
         attempt++;
         attemptsE1.textContent = `attemps : ${attempt}`
     }
@@ -114,9 +120,9 @@ function clickHandle(event)
 }
 
 let btnEl = document.getElementById('btn');
-btnEl.addEventListener('click', displayResult)
+btnEl.addEventListener('click', showResult)
 
-function displayResult(event) 
+function showResult(event) 
 {
     let liEl;
     
@@ -124,16 +130,12 @@ function displayResult(event)
     {
         liEl = document.createElement('li');
         result.appendChild(liEl);
-
         liEl.textContent = `${product[i].pName} has ${product[i].Votes} votes and  ${product[i].Views} views.`;
-        voteImage.push(product[i].Votes);
-        viewImage.push(product[i].Views);
-
-        liEl.textContent = `${productArr[i].productImageName} has ${productArr[i].votes} votes and  ${productArr[i].views} views.`;
-
+        voteImg.push(product[i].Votes);
+        viewImg.push(product[i].Views);
     }
-    btnEl.removeEventListener('click', displayResult)
-    localStorageSave();
+    btnEl.removeEventListener('click', showResult)
+    forSaveLocalStorage();
     chartRender()
 }
 
@@ -142,10 +144,10 @@ function chartRender() {
     let myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: busNameImage,
+            labels: busImg,
             datasets: [{
                 label: '# of Votes',
-                data: voteImage,
+                data: voteImg,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)'
                 ],
@@ -155,7 +157,7 @@ function chartRender() {
                 borderWidth: 1
             }, {
                 label: '# of views',
-                data: viewImage,
+                data: viewImg,
                 backgroundColor: [
                     'rgba(54, 162, 235, 0.2)'
                 ],
