@@ -45,7 +45,7 @@ function forReadLocalStorage()
         product = normalObj;
     }
 }
-
+// read storage
 forReadLocalStorage();
 
 function ImgProduct(productName) {
